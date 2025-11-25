@@ -9,8 +9,8 @@ const currentFileCount = document.getElementById('currentFileCount');
 const totalFileCount = document.getElementById('totalFileCount');
 const convertMoreBtn = document.getElementById('convertMoreBtn');
 const browseText = document.querySelector('.browse-text');
-const scaleInput = document.getElementById('scale');
-const scaleValue = document.getElementById('scaleValue');
+// const scaleInput = document.getElementById('scale');
+// const scaleValue = document.getElementById('scaleValue');
 const dimensionsPreview = document.getElementById('dimensionsPreview');
 const outputDimensions = document.getElementById('outputDimensions');
 
@@ -117,11 +117,11 @@ compressionInput.addEventListener('input', () => {
   compressionValue.textContent = compressionInput.value;
 });
 
-scaleInput.addEventListener('input', () => {
-  const scale = parseInt(scaleInput.value);
-  scaleValue.textContent = `${scale}%`;
-  updateOutputDimensions(scale);
-});
+// scaleInput.addEventListener('input', () => {
+//   const scale = parseInt(scaleInput.value);
+//   scaleValue.textContent = `${scale}%`;
+//   updateOutputDimensions(scale);
+// });
 
 function updateOutputDimensions(scale) {
   if (!currentVideoDimensions) {
@@ -129,9 +129,9 @@ function updateOutputDimensions(scale) {
     return;
   }
 
-  const scaleFactor = scale / 100;
-  const outputWidth = Math.round(currentVideoDimensions.width * scaleFactor);
-  const outputHeight = Math.round(currentVideoDimensions.height * scaleFactor);
+  // const scaleFactor = scale / 100;
+  const outputWidth = 720; //Math.round(currentVideoDimensions.width * scaleFactor);
+  const outputHeight = Math.floor(currentVideoDimensions.height * 720 / currentVideoDimensions.width);
   
   outputDimensions.textContent = `${outputWidth}×${outputHeight}`;
   dimensionsPreview.style.display = 'flex';
@@ -144,7 +144,7 @@ function getConversionSettings() {
     lossless: losslessInput.checked,
     compressionLevel: parseInt(compressionInput.value),
     preset: presetInput.value,
-    scale: parseInt(scaleInput.value)
+    scale: parseInt(100) //parseInt(scaleInput.value)
   };
 }
 
@@ -156,7 +156,7 @@ async function processFiles(filePaths) {
   try {
     const dimensions = await window.api.getVideoDimensions(filePaths[0]);
     currentVideoDimensions = dimensions;
-    updateOutputDimensions(parseInt(scaleInput.value));
+    updateOutputDimensions(parseInt(100)); // parseInt(scaleInput.value)
   } catch (error) {
     console.error('Error getting video dimensions:', error);
   }

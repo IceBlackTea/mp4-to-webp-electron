@@ -139,7 +139,7 @@ async function processFiles(filePaths, settings = {}) {
   
   // Default settings
   const defaultSettings = {
-    quality: 80,
+    quality: 75,
     lossless: false,
     compressionLevel: 6,
     preset: 'default',
@@ -171,24 +171,40 @@ async function processFiles(filePaths, settings = {}) {
       await new Promise((resolve, reject) => {
         // Create the ffmpeg command with settings
         const command = ffmpeg(filePath)
+          .size('720x?') // 导出宽度720的图
           .outputFormat('webp')
           .noAudio() // WebP typically doesn't support audio
           .videoCodec('libwebp');
 
         // Apply scale if not 100%
-        if (finalSettings.scale !== 100) {
-          command.videoFilters([{
-            filter: 'scale',
-            options: `iw*${finalSettings.scale/100}:ih*${finalSettings.scale/100}`
-          }]);
-        }
+        // if (finalSettings.scale !== 100) {
+        //   command.videoFilters([{
+        //     filter: 'scale',
+        //     options: `iw*${finalSettings.scale/100}:ih*${finalSettings.scale/100}`
+        //   }]);
+        // }
+
+        command.videoFilters([
+          // {
+          //   filter: 'scale',
+          //   options: 'iw*0.5:ih*0.5'
+          // },
+          {
+            filter: 'fps',
+            options: '12'
+          }
+        ]);
+
+        
 
         command
           .addOutputOption(`-quality ${finalSettings.quality}`)
           .addOutputOption(`-lossless ${finalSettings.lossless ? 1 : 0}`)
           .addOutputOption(`-compression_level ${finalSettings.compressionLevel}`)
           .addOutputOption(`-preset ${finalSettings.preset}`)
+          .addOutputOption('-loop 0') // 循环播放
           .output(outputPath);
+          // .output(path.join(fileInfo.dir, "frame_%04d.webp"))
 
         // Add progress handler
         let lastProgressTime = Date.now();
@@ -230,7 +246,7 @@ async function processFiles(filePaths, settings = {}) {
           console.log(`Finished processing ${filePath}`);
           resolve();
         });
-        
+
         command.on('error', (err) => {
           console.error(`Error during conversion: ${err.message}`);
           completed++;

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wituz's WebP Converter</title>
+  <title>WebP 转换器</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="title-bar">
       <div class="title">
         <img src="logo.svg" alt="Logo" class="logo" id="appLogo">
-        <h1>Wituz's WebP Converter</h1>
+        <h1>WebP 转换器</h1>
       </div>
       <div class="window-controls">
         <button class="control minimize" id="minimizeBtn"></button>
@@ -22,12 +22,12 @@
 
     <div class="main-content">
       <div class="settings-panel">
-        <h3>Conversion Settings</h3>
+        <h3>转换参数设定</h3>
         <div class="setting-group">
           <label for="quality">Quality:</label>
           <div class="setting-control">
-            <input type="range" id="quality" min="0" max="100" value="80">
-            <span id="qualityValue">80</span>
+            <input type="range" id="quality" min="0" max="100" value="75">
+            <span id="qualityValue">75</span>
           </div>
         </div>
         <div class="setting-group">
@@ -36,13 +36,13 @@
             <input type="checkbox" id="lossless">
           </div>
         </div>
-        <div class="setting-group">
+        <!-- <div class="setting-group">
           <label for="scale">Scale:</label>
           <div class="setting-control">
             <input type="range" id="scale" min="1" max="200" value="100">
             <span id="scaleValue">100%</span>
           </div>
-        </div>
+        </div> -->
         <div class="setting-group" id="dimensionsPreview" style="display: none;">
           <label>Output Size:</label>
           <div class="setting-control">
@@ -78,13 +78,13 @@
               <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="currentColor"/>
             </svg>
           </div>
-          <p class="drop-text">Drag MP4 files here or <span class="browse-text">browse</span></p>
+          <p class="drop-text">将（单个或多个） MP4/MOV/AVI 格式的视频文件拖入或者<span class="browse-text">选择文件</span></p>
         </div>
       </div>
 
       <div class="conversion-progress" id="progressContainer" style="display: none;">
         <div class="current-file">
-          <h3>Converting: <span id="currentFileName">filename.mp4</span></h3>
+          <h3>转换中: <span id="currentFileName">filename.mp4</span></h3>
           <p>File <span id="currentFileCount">1</span> of <span id="totalFileCount">1</span></p>
         </div>
         
@@ -103,9 +103,9 @@
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
           </svg>
         </div>
-        <h3>Conversion Complete!</h3>
-        <p>All files have been successfully converted to WebP format</p>
-        <button class="convert-more-btn" id="convertMoreBtn">Convert More</button>
+        <h3>转换完成!</h3>
+        <p>所有视频文件都已经被转换成webp格式，请在视频同级路径下查看</p>
+        <button class="convert-more-btn" id="convertMoreBtn">转换更多视频</button>
       </div>
     </div>
   </div>

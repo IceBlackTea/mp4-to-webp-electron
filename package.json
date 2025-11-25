@@ -1,5 +1,5 @@
 {
-  "name": "wituz-webp-converter",
+  "name": "webp-converter",
   "version": "1.0.0",
   "description": "An elegant MP4 to WebP converter with a modern, animated UI",
   "main": "main.js",
@@ -15,11 +15,11 @@
     "video",
     "ffmpeg"
   ],
-  "author": "Wituz",
+  "author": "Xummer",
   "license": "MIT",
   "build": {
-    "appId": "com.wituz.webp-converter",
-    "productName": "Wituz's WebP Converter",
+    "appId": "com.xummer.webp-converter",
+    "productName": "WebP Converter",
     "mac": {
       "category": "public.app-category.utilities",
       "target": ["dmg"],
