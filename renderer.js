@@ -213,6 +213,9 @@ function showNotification(message) {
 
 // Register event handlers for conversion progress and completion
 window.api.onProgress((data) => {
+  if (progressContainer.style.display != 'block') {
+    showProgressUI();
+  }
   updateProgressUI(data);
 });
 
