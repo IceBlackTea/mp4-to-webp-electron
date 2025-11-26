@@ -4,6 +4,27 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('ffmpeg-static');
 
+const logPath = path.join(process.cwd(), 'debug.log');
+
+function log(...args) {
+  fs.appendFileSync(logPath, args.join(' ') + '\n');
+  console.log(args);
+}
+
+process.on('uncaughtException', (err) => {
+  log('uncaughtException:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+  log('unhandledRejection:', err);
+});
+
+log("cwd=", process.cwd());
+log("__dirname=", __dirname);
+log("resourcesPath=", process.resourcesPath);
+log("userData=", app.getPath("userData"));
+log("ffmpegPath=", ffmpegPath);
+
 // Set ffmpeg path
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -92,7 +113,7 @@ ipcMain.handle('get-video-dimensions', async (event, filePath) => {
   return new Promise((resolve, reject) => {
     ffmpeg.ffprobe(filePath, (err, metadata) => {
       if (err) {
-        console.error('Error getting video dimensions:', err);
+        log('Error getting video dimensions:', err);
         reject(err);
         return;
       }
@@ -130,7 +151,7 @@ ipcMain.handle('select-files', async () => {
 async function processFiles(filePaths, settings = {}) {
   // Validate input
   if (!filePaths || !Array.isArray(filePaths) || filePaths.length === 0) {
-    console.error('Invalid file paths received:', filePaths);
+    log('Invalid file paths received:', filePaths);
     return { success: false, message: 'No valid files to process' };
   }
   
@@ -152,7 +173,7 @@ async function processFiles(filePaths, settings = {}) {
   for (const filePath of filePaths) {
     // Skip invalid file paths
     if (!filePath || typeof filePath !== 'string') {
-      console.warn('Invalid file path, skipping:', filePath);
+      log('Invalid file path, skipping:', filePath);
       continue;
     }
     
@@ -208,23 +229,43 @@ async function processFiles(filePaths, settings = {}) {
 
         // Add progress handler
         let lastProgressTime = Date.now();
+        let fakeProgess = 0;
         
         command.on('progress', (progress) => {
           // Throttle progress updates to avoid overwhelming the UI
           const now = Date.now();
           if (now - lastProgressTime > 100 || progress.percent >= 100) {
             lastProgressTime = now;
+
+            if (isNaN(progress.percent)) {
+
+              if (fakeProgess < 95) {
+                fakeProgess = fakeProgess + 5;
+              }
+              // Update progress in UI
+              mainWindow.webContents.send('conversion-progress', {
+                file: fileInfo.base,
+                progress: fakeProgess,
+                currentFile: completed + 1,
+                totalFiles: filePaths.length
+              });
+              
+              // Log progress to console for debugging
+              log(`Progress: ${fakeProgess}% done`);
+
+            } else {
             
-            // Update progress in UI
-            mainWindow.webContents.send('conversion-progress', {
-              file: fileInfo.base,
-              progress: Math.floor(progress.percent),
-              currentFile: completed + 1,
-              totalFiles: filePaths.length
-            });
-            
-            // Log progress to console for debugging
-            console.log(`Progress: ${Math.floor(progress.percent)}% done`);
+              // Update progress in UI
+              mainWindow.webContents.send('conversion-progress', {
+                file: fileInfo.base,
+                progress: Math.floor(progress.percent),
+                currentFile: completed + 1,
+                totalFiles: filePaths.length
+              });
+              
+              // Log progress to console for debugging
+              log(`Progress: ${Math.floor(progress.percent)}% done`);
+            }
           }
         });
         
@@ -243,12 +284,12 @@ async function processFiles(filePaths, settings = {}) {
             output: outputPath,
             success: true
           });
-          console.log(`Finished processing ${filePath}`);
+          log(`Finished processing ${filePath}`);
           resolve();
         });
 
         command.on('error', (err) => {
-          console.error(`Error during conversion: ${err.message}`);
+          log(`Error during conversion: ${err.message}`);
           completed++;
           results.push({
             input: filePath,
@@ -260,9 +301,9 @@ async function processFiles(filePaths, settings = {}) {
         
         // Run the command
         command.run();
-      }).catch(err => console.error(`Error converting ${filePath}:`, err));
+      }).catch(err => log(`Error converting ${filePath}:`, err));
     } catch (error) {
-      console.error(`Error processing ${filePath}:`, error);
+      log(`Error processing ${filePath}:`, error);
     }
   }
   
