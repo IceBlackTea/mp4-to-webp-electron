@@ -14,7 +14,7 @@ const ffmpegPath = getFFmpegPath();
 const logPath = path.join(process.cwd(), 'debug.log');
 
 function log(...args) {
-  fs.appendFileSync(logPath, args.join(' ') + '\n');
+  // fs.appendFileSync(logPath, args.join(' ') + '\n');
   console.log(args);
 }
 
