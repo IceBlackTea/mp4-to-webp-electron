@@ -2,7 +2,14 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
-const ffmpegPath = require('ffmpeg-static');
+// const ffmpegPath = require('ffmpeg-static');
+function getFFmpegPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'ffmpeg', 'ffmpeg.exe');
+  }
+  return require('ffmpeg-static');
+}
+const ffmpegPath = getFFmpegPath();
 
 const logPath = path.join(process.cwd(), 'debug.log');
 

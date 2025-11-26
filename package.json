@@ -24,17 +24,53 @@
       "category": "public.app-category.utilities",
       "target": ["dmg"],
       "icon": "build/icon.icns",
-      "identity": null
+      "identity": null,
+      "asarUnpack": [
+        "node_modules/ffmpeg-static/**"
+      ],
+      "extraResources": [
+        {
+          "from": "node_modules/ffmpeg-static/",
+          "to": "ffmpeg",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ]
     },
     "win": {
       "target": ["nsis"],
       "icon": "build/icon.ico",
-      "sign": null
+      "sign": null,
+      "asarUnpack": [
+        "node_modules/ffmpeg-static/**"
+      ],
+      "extraResources": [
+        {
+          "from": "node_modules/ffmpeg-static/",
+          "to": "ffmpeg",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ]
     },
     "linux": {
       "target": ["AppImage"],
       "category": "Utility",
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "asarUnpack": [
+        "node_modules/ffmpeg-static/**"
+      ],
+      "extraResources": [
+        {
+          "from": "node_modules/ffmpeg-static/",
+          "to": "ffmpeg",
+          "filter": [
+            "**/*"
+          ]
+        }
+      ]
     },
     "directories": {
       "buildResources": "build"
